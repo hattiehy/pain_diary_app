@@ -2,6 +2,7 @@ package com.example.ass3.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import com.example.ass3.R;
 import com.example.ass3.fragment.SignInFragment;
 import com.example.ass3.fragment.SignUpFragment;
 import com.example.ass3.model.User;
+import com.example.ass3.viewmodel.PainRecordViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,6 +26,8 @@ public class LoginActivity extends AppCompatActivity implements FragmentInteract
     SignInFragment loginFragment;
     SignUpFragment signUpFragment;
     private FirebaseAuth mAuth;
+
+    PainRecordViewModel model = new ViewModelProvider(LoginActivity.this).get(PainRecordViewModel.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements FragmentInteract
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Authentication success.",
                                     Toast.LENGTH_SHORT).show();
+                            model.setUsername(email);
                             toMainActivity();
                         } else {
                             Toast.makeText(LoginActivity.this, "Authentication failed.",

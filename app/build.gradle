@@ -71,4 +71,15 @@ dependencies {
 
     // Weather API
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:2.1.0'
+
+    // Room
+    implementation 'androidx.room:room-runtime:2.2.6'
+    annotationProcessor 'androidx.room:room-compiler:2.2.6'
+
+    // SeekBar
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+
+    // Ruler View
+    implementation 'com.github.superSp:RulerView:v1.5'
+
 }

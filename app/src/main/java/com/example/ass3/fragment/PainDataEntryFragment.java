@@ -1,66 +1,199 @@
 package com.example.ass3.fragment;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.example.ass3.R;
+import com.example.ass3.entity.PainRecord;
+import com.example.ass3.repository.PainRecordRepository;
+import com.example.ass3.viewmodel.PainRecordViewModel;
+import com.jaygoo.widget.OnRangeChangedListener;
+import com.jaygoo.widget.RangeSeekBar;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PainDataEntryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
+
+
 public class PainDataEntryFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private com.jaygoo.widget.RangeSeekBar sbPainLevel;
+    private Spinner spPainLocation;
+    private com.jaygoo.widget.RangeSeekBar sbMood;
+    private EditText etEnterSteps;
+    private EditText etEnterGoal;
+    private Button bEdit;
+    private Button bSave;
+    private float level;
+    private float mood;
+    private String location;
 
     public PainDataEntryFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PainDataEntryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PainDataEntryFragment newInstance(String param1, String param2) {
-        PainDataEntryFragment fragment = new PainDataEntryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pain_data_entry, container, false);
+        View view = inflater.inflate(R.layout.fragment_pain_data_entry, container, false);
+
+        PainRecordViewModel model = new ViewModelProvider(requireActivity()).get(PainRecordViewModel.class);
+
+        sbPainLevel = view.findViewById(R.id.sb_pain_level);
+        spPainLocation = view.findViewById(R.id.sp_pain_location);
+        sbMood = view.findViewById(R.id.sb_mood);
+        etEnterSteps = view.findViewById(R.id.et_step_number);
+        etEnterGoal = view.findViewById(R.id.et_step_goal);
+        bEdit = view.findViewById(R.id.btn_edit);
+        bSave = view.findViewById(R.id.btn_save);
+
+
+
+        sbPainLevel.setOnRangeChangedListener(new OnRangeChangedListener() {
+            @Override
+            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
+                //leftValue is left seekbar value, rightValue is right seekbar value
+            }
+
+            @Override
+            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //start tracking touch
+            }
+
+            @Override
+            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //stop tracking touch
+                level = view.getLeftSeekBar().getProgress();
+            }
+        });
+
+        sbMood.setOnRangeChangedListener(new OnRangeChangedListener() {
+            @Override
+            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
+                //leftValue is left seekbar value, rightValue is right seekbar value
+            }
+
+            @Override
+            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //start tracking touch
+            }
+
+            @Override
+            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //stop tracking touch
+                mood = view.getLeftSeekBar().getProgress();
+            }
+        });
+
+
+        spPainLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                location = getResources().getStringArray(R.array.painLocationArray)[position];
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+        bSave.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                Double temp = model.getTemperature().getValue();
+                Double humidity = model.getHumidity().getValue();
+                Double pressure = model.getPressure().getValue();
+                String username = model.getUsername().getValue();
+
+                // set date format
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                // set time zone
+                formatter.setTimeZone(TimeZone.getTimeZone("GMT+10"));
+                // get current date
+                Date curDate = new Date(System.currentTimeMillis());
+                // transfer format to String
+                String recordDate = formatter.format(curDate);
+                Integer painLevel = Integer.parseInt(String.valueOf(level).substring(0,1));
+                Integer moodLevel = Integer.parseInt(String.valueOf(mood).substring(0,1));
+                Integer step = Integer.parseInt(etEnterSteps.getText().toString().trim());
+
+                PainRecord painRecord = new PainRecord();
+                if (username == null) {
+                    painRecord.setUsername("");
+                } else {
+                    painRecord.setUsername(username);
+                }
+                painRecord.setTemperature(temp);
+                painRecord.setPressure(pressure);
+                painRecord.setHumidity(humidity);
+                painRecord.setDate(recordDate);
+                painRecord.setPainLevel(painLevel);
+                painRecord.setMoodLevel(moodLevel);
+                painRecord.setStepTaken(step);
+                painRecord.setPainLocation(location);
+
+                sbPainLevel.setEnabled(false);
+                spPainLocation.setEnabled(false);
+                sbMood.setEnabled(false);
+                etEnterSteps.setEnabled(false);
+                etEnterGoal.setEnabled(false);
+                bSave.setEnabled(false);
+
+                try {
+                    PainRecord painRecord_old = model.findByDate(recordDate).get();
+                    if (painRecord_old == null) {
+                        model.insert(painRecord);
+                    } else {
+                        painRecord_old.setTemperature(temp);
+                        painRecord_old.setPressure(pressure);
+                        painRecord_old.setHumidity(humidity);
+                        painRecord_old.setDate(recordDate);
+                        painRecord_old.setPainLevel(painLevel);
+                        painRecord_old.setMoodLevel(moodLevel);
+                        painRecord_old.setStepTaken(step);
+                        painRecord_old.setPainLocation(location);
+                        model.update(painRecord_old);
+                    }
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        bEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sbPainLevel.setEnabled(true);
+                spPainLocation.setEnabled(true);
+                sbMood.setEnabled(true);
+                etEnterSteps.setEnabled(true);
+                etEnterGoal.setEnabled(true);
+                bSave.setEnabled(true);
+            }
+        });
+
+        return view;
     }
 }
