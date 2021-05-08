@@ -95,4 +95,9 @@ public class PainRecordViewModel extends AndroidViewModel {
     public void update(PainRecord painRecord) {
         pRepository.updateRecord(painRecord);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public CompletableFuture<List<String>> getAllLocations() {
+        return pRepository.getAllLoc();
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.ass3.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,13 +16,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.ass3.R;
 import com.example.ass3.entity.PainRecord;
 import com.example.ass3.repository.PainRecordRepository;
 import com.example.ass3.viewmodel.PainRecordViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 
 public class PainDataEntryFragment extends Fragment {
 
+    private FirebaseAuth mAuth;
     private com.jaygoo.widget.RangeSeekBar sbPainLevel;
     private Spinner spPainLocation;
     private com.jaygoo.widget.RangeSeekBar sbMood;
@@ -57,6 +63,7 @@ public class PainDataEntryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pain_data_entry, container, false);
 
         PainRecordViewModel model = new ViewModelProvider(requireActivity()).get(PainRecordViewModel.class);
+        mAuth = FirebaseAuth.getInstance();
 
         sbPainLevel = view.findViewById(R.id.sb_pain_level);
         spPainLocation = view.findViewById(R.id.sp_pain_location);
@@ -123,7 +130,7 @@ public class PainDataEntryFragment extends Fragment {
                 Double temp = model.getTemperature().getValue();
                 Double humidity = model.getHumidity().getValue();
                 Double pressure = model.getPressure().getValue();
-                String username = model.getUsername().getValue();
+                String username = mAuth.getCurrentUser().getEmail();
 
                 // set date format
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -135,14 +142,24 @@ public class PainDataEntryFragment extends Fragment {
                 String recordDate = formatter.format(curDate);
                 Integer painLevel = Integer.parseInt(String.valueOf(level).substring(0,1));
                 Integer moodLevel = Integer.parseInt(String.valueOf(mood).substring(0,1));
+                if(StringUtils.isBlank(etEnterSteps.getText())) {
+                    Toast.makeText(getContext(), "Not a valid step number" , Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Integer step = Integer.parseInt(etEnterSteps.getText().toString().trim());
 
-                PainRecord painRecord = new PainRecord();
-                if (username == null) {
-                    painRecord.setUsername("");
-                } else {
-                    painRecord.setUsername(username);
+                if (StringUtils.isBlank(etEnterGoal.getText())) {
+                    etEnterGoal.setText("10000");
                 }
+                Integer stepGoal = Integer.parseInt(etEnterGoal.getText().toString().trim());
+                SharedPreferences sharedPref= requireActivity(). getSharedPreferences("step_goal", getContext().MODE_PRIVATE);
+                SharedPreferences.Editor spEditor = sharedPref.edit();
+                spEditor.putInt("step_goal", stepGoal);
+                spEditor.apply();
+
+
+                PainRecord painRecord = new PainRecord();
+                painRecord.setUsername(username);
                 painRecord.setTemperature(temp);
                 painRecord.setPressure(pressure);
                 painRecord.setHumidity(humidity);
@@ -159,10 +176,12 @@ public class PainDataEntryFragment extends Fragment {
                 etEnterGoal.setEnabled(false);
                 bSave.setEnabled(false);
 
+//                model.insert(painRecord);
                 try {
                     PainRecord painRecord_old = model.findByDate(recordDate).get();
                     if (painRecord_old == null) {
                         model.insert(painRecord);
+                        Toast.makeText(getContext(), "Successfully saved record" , Toast.LENGTH_SHORT).show();
                     } else {
                         painRecord_old.setTemperature(temp);
                         painRecord_old.setPressure(pressure);
@@ -173,6 +192,7 @@ public class PainDataEntryFragment extends Fragment {
                         painRecord_old.setStepTaken(step);
                         painRecord_old.setPainLocation(location);
                         model.update(painRecord_old);
+                        Toast.makeText(getContext(), "Successfully update record" , Toast.LENGTH_SHORT).show();
                     }
                 } catch (ExecutionException e) {
                     e.printStackTrace();

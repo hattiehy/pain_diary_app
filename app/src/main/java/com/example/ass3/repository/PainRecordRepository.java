@@ -95,4 +95,15 @@ public class PainRecordRepository {
             }
         }, PainRecordDatabase.databaseWriteExecutor);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public CompletableFuture<List<String>> getAllLoc() {
+        return CompletableFuture.supplyAsync(new Supplier<List<String>>() {
+
+            @Override
+            public List<String> get() {
+                return painRecordDAO.getPainLoc();
+            }
+        }, PainRecordDatabase.databaseWriteExecutor);
+    }
 }

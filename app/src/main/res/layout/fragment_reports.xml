@@ -3,12 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="10dp"
     android:gravity="center">
-    <TextView
-        android:id="@+id/tm_pian_data_entry"
+
+    <Button
+        android:id="@+id/btn_pain_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="This is Report"
-        android:gravity="center_horizontal" />
+        android:text="Pain location" />
+
+    <Button
+        android:id="@+id/btn_steps_taken"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Steps taken" />
+
+    <Button
+        android:id="@+id/btn_pain_weather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Pain and Weather" />
 </LinearLayout>

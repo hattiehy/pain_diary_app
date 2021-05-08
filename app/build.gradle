@@ -82,4 +82,9 @@ dependencies {
     // Ruler View
     implementation 'com.github.superSp:RulerView:v1.5'
 
+    // MPAndroid
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // StringUtils
+    implementation 'org.apache.commons:commons-lang3:3.6'
 }

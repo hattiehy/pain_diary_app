@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import com.example.ass3.entity.PainRecord;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -18,6 +19,9 @@ public interface PainRecordDAO {
 
     @Query("SELECT * FROM PainRecord ORDER BY uid ASC")
     List<PainRecord> getAllR();
+
+    @Query("SELECT pain_location FROM PainRecord")
+    List<String> getPainLoc();
 
     @Query("SELECT * FROM PainRecord WHERE uid = :recordId LIMIT 1")
     PainRecord findByID(int recordId);

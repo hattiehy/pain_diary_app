@@ -27,8 +27,6 @@ public class LoginActivity extends AppCompatActivity implements FragmentInteract
     SignUpFragment signUpFragment;
     private FirebaseAuth mAuth;
 
-    PainRecordViewModel model = new ViewModelProvider(LoginActivity.this).get(PainRecordViewModel.class);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements FragmentInteract
 
         mAuth = FirebaseAuth.getInstance();
 //        updateUI(currentUser);
+
     }
 
     @Override
@@ -60,7 +59,6 @@ public class LoginActivity extends AppCompatActivity implements FragmentInteract
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Authentication success.",
                                     Toast.LENGTH_SHORT).show();
-                            model.setUsername(email);
                             toMainActivity();
                         } else {
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
