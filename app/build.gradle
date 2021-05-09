@@ -30,6 +30,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
     }
 
     buildFeatures {
@@ -87,4 +88,7 @@ dependencies {
 
     // StringUtils
     implementation 'org.apache.commons:commons-lang3:3.6'
+
+    // Time
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }

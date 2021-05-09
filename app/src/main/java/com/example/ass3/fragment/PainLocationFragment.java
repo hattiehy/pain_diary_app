@@ -54,6 +54,7 @@ public class PainLocationFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class PainLocationFragment extends Fragment {
 //        pcPainLocation.setCenterTextTypeface(tfLight);
         pcPainLocation.setCenterText(generateCenterSpannableText());
 
-        pcPainLocation.setDrawHoleEnabled(true);
+        pcPainLocation.setDrawHoleEnabled(false);
         pcPainLocation.setHoleColor(Color.WHITE);
 
         pcPainLocation.setTransparentCircleColor(Color.WHITE);
@@ -119,7 +120,6 @@ public class PainLocationFragment extends Fragment {
         for (Map.Entry<String, Integer> entry : location_freq.entrySet()) {
             entries.add(new PieEntry(entry.getValue(), entry.getKey()));
         }
-
         PieDataSet dataSet = new PieDataSet(entries, "Pain Location");
 
         dataSet.setDrawIcons(false);
@@ -157,6 +157,8 @@ public class PainLocationFragment extends Fragment {
         data.setValueFormatter(new PercentFormatter());
         data.setValueTextSize(13f);
         data.setValueTextColor(Color.DKGRAY);
+        pcPainLocation.setDrawEntryLabels(true);
+        pcPainLocation.setEntryLabelColor(Color.DKGRAY);
         pcPainLocation.setData(data);
 
         // undo all highlights

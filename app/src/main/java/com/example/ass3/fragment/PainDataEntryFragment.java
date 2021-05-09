@@ -29,6 +29,8 @@ import com.jaygoo.widget.RangeSeekBar;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
@@ -132,14 +134,7 @@ public class PainDataEntryFragment extends Fragment {
                 Double pressure = model.getPressure().getValue();
                 String username = mAuth.getCurrentUser().getEmail();
 
-                // set date format
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                // set time zone
-                formatter.setTimeZone(TimeZone.getTimeZone("GMT+10"));
-                // get current date
-                Date curDate = new Date(System.currentTimeMillis());
-                // transfer format to String
-                String recordDate = formatter.format(curDate);
+                String recordDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                 Integer painLevel = Integer.parseInt(String.valueOf(level).substring(0,1));
                 Integer moodLevel = Integer.parseInt(String.valueOf(mood).substring(0,1));
                 if(StringUtils.isBlank(etEnterSteps.getText())) {

@@ -36,7 +36,7 @@ public class ReportsFragment extends Fragment {
         bPainWeather = view.findViewById(R.id.btn_pain_weather);
 
         bPainLocation.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_nav_report_fragment_to_painLocationFragment, null));
-
+        bStepTaken.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_nav_report_fragment_to_stepTakenFragment, null));
 
         return view;
     }

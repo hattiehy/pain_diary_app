@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_nav_report_fragment_to_painLocationFragment"
             app:destination="@id/painLocationFragment" />
+        <action
+            android:id="@+id/action_nav_report_fragment_to_stepTakenFragment"
+            app:destination="@id/stepTakenFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_map_fragment"
@@ -34,4 +37,9 @@
         android:name="com.example.ass3.fragment.PainLocationFragment"
         android:label="fragment_pain_location"
         tools:layout="@layout/fragment_pain_location" />
+    <fragment
+        android:id="@+id/stepTakenFragment"
+        android:name="com.example.ass3.fragment.StepTakenFragment"
+        android:label="fragment_step_taken"
+        tools:layout="@layout/fragment_step_taken" />
 </navigation>
