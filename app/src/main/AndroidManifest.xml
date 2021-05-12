@@ -26,9 +26,10 @@
             android:theme="@style/Theme.NavigationJava.NoActionBar" />
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/Theme.NavigationJava.NoActionBar">
+            android:theme="@style/Theme.NavigationJava.NoActionBar" />
 
-        </activity>
+        <!--Receiver-->
+        <receiver android:name=".notification.AlertReceiver"/>
     </application>
 
 </manifest>

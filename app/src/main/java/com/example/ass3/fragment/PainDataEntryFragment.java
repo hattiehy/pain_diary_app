@@ -1,14 +1,14 @@
 package com.example.ass3.fragment;
 
-import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +16,16 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ass3.R;
 import com.example.ass3.entity.PainRecord;
-import com.example.ass3.repository.PainRecordRepository;
+import com.example.ass3.notification.AlertReceiver;
 import com.example.ass3.viewmodel.PainRecordViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.jaygoo.widget.OnRangeChangedListener;
@@ -28,12 +33,9 @@ import com.jaygoo.widget.RangeSeekBar;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Random;
-import java.util.TimeZone;
+import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 
@@ -46,7 +48,7 @@ public class PainDataEntryFragment extends Fragment {
     private EditText etEnterSteps;
     private EditText etEnterGoal;
     private Button bEdit;
-    private Button bSave;
+    private Button bSave, bSetAlert;
     private float level;
     private float mood;
     private String location;
@@ -58,6 +60,7 @@ public class PainDataEntryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -75,7 +78,7 @@ public class PainDataEntryFragment extends Fragment {
         etEnterGoal = view.findViewById(R.id.et_step_goal);
         bEdit = view.findViewById(R.id.btn_edit);
         bSave = view.findViewById(R.id.btn_save);
-
+        bSetAlert = view.findViewById(R.id.btn_set_alert);
 
 
         sbPainLevel.setOnRangeChangedListener(new OnRangeChangedListener() {
@@ -120,6 +123,7 @@ public class PainDataEntryFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 location = getResources().getStringArray(R.array.painLocationArray)[position];
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -137,10 +141,10 @@ public class PainDataEntryFragment extends Fragment {
 
                 String recordDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-                Integer painLevel = Integer.parseInt(String.valueOf(level).substring(0,1));
-                Integer moodLevel = Integer.parseInt(String.valueOf(mood).substring(0,1));
-                if(StringUtils.isBlank(etEnterSteps.getText())) {
-                    Toast.makeText(getContext(), "Not a valid step number" , Toast.LENGTH_SHORT).show();
+                Integer painLevel = Integer.parseInt(String.valueOf(level).substring(0, 1));
+                Integer moodLevel = Integer.parseInt(String.valueOf(mood).substring(0, 1));
+                if (StringUtils.isBlank(etEnterSteps.getText())) {
+                    Toast.makeText(getContext(), "Not a valid step number", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Integer step = Integer.parseInt(etEnterSteps.getText().toString().trim());
@@ -149,7 +153,7 @@ public class PainDataEntryFragment extends Fragment {
                     etEnterGoal.setText("10000");
                 }
                 Integer stepGoal = Integer.parseInt(etEnterGoal.getText().toString().trim());
-                SharedPreferences sharedPref= requireActivity(). getSharedPreferences("step_goal", getContext().MODE_PRIVATE);
+                SharedPreferences sharedPref = requireActivity().getSharedPreferences("step_goal", getContext().MODE_PRIVATE);
                 SharedPreferences.Editor spEditor = sharedPref.edit();
                 spEditor.putInt("step_goal", stepGoal);
                 spEditor.apply();
@@ -190,7 +194,7 @@ public class PainDataEntryFragment extends Fragment {
                     PainRecord painRecord_old = model.findByDate(recordDate).get();
                     if (painRecord_old == null) {
                         model.insert(painRecord);
-                        Toast.makeText(getContext(), "Successfully saved record" , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Successfully saved record", Toast.LENGTH_SHORT).show();
                     } else {
                         painRecord_old.setTemperature(temp);
                         painRecord_old.setPressure(pressure);
@@ -201,7 +205,7 @@ public class PainDataEntryFragment extends Fragment {
                         painRecord_old.setStepTaken(step);
                         painRecord_old.setPainLocation(location);
                         model.update(painRecord_old);
-                        Toast.makeText(getContext(), "Successfully update record" , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Successfully update record", Toast.LENGTH_SHORT).show();
                     }
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -221,6 +225,27 @@ public class PainDataEntryFragment extends Fragment {
                 etEnterGoal.setEnabled(true);
                 bSave.setEnabled(true);
             }
+        });
+
+        Calendar c = Calendar.getInstance();
+        bSetAlert.setOnClickListener(v -> {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), AlertDialog.THEME_HOLO_LIGHT, (view1, hourOfDay, minute) -> {
+                String select_hour = String.valueOf(hourOfDay);
+                String select_minute = String.valueOf(minute);
+                if (hourOfDay < 10) {
+                    select_hour = "0" + hourOfDay;
+                }
+                if (minute < 10) {
+                    select_minute = "0" + minute;
+                }
+                Toast.makeText(getContext(), "Alert time has been set at: " + select_hour + ":" + select_minute + "", Toast.LENGTH_SHORT).show();
+
+                AlarmManager alarmManager = (AlarmManager) getContext().getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(getContext().getApplicationContext(), AlertReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext().getApplicationContext(), 1, intent, 0);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis() - 120 * 1000, 86400*60000, pendingIntent);
+            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
+            timePickerDialog.show();
         });
 
         return view;

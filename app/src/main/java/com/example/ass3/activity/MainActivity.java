@@ -1,20 +1,31 @@
 package com.example.ass3.activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TimePicker;
 
 import com.example.ass3.R;
 import com.example.ass3.databinding.ActivityMainBinding;
-import com.kwabenaberko.openweathermaplib.constant.Languages;
-import com.kwabenaberko.openweathermaplib.constant.Units;
-import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
+import com.example.ass3.notification.AlertReceiver;
+
+import java.text.DateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -48,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         //Sets up a Toolbar for use with a NavController.
         NavigationUI.setupWithNavController(binding.appBar.toolbar, navController,
                 mAppBarConfiguration);
-
-
 
     }
 }
