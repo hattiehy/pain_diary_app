@@ -14,9 +14,7 @@ import com.example.ass3.R;
 
 public class ReportsFragment extends Fragment {
 
-    private Button bPainLocation;
-    private Button bStepTaken;
-    private Button bPainWeather;
+    private Button bPainLocation,bStepTaken, bPainWeather;
 
     public ReportsFragment() {
         // Required empty public constructor
@@ -37,7 +35,7 @@ public class ReportsFragment extends Fragment {
 
         bPainLocation.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_nav_report_fragment_to_painLocationFragment, null));
         bStepTaken.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_nav_report_fragment_to_stepTakenFragment, null));
-
+        bPainWeather.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_nav_report_fragment_to_painWeatherFragment, null));
         return view;
     }
 }

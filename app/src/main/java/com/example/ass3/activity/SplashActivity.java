@@ -20,13 +20,13 @@ public class SplashActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        Intent intent;
         if (firebaseUser != null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            navigateDelayed(intent);
+            intent = new Intent(this, MainActivity.class);
         } else {
-            Intent intent = new Intent(this, LoginActivity.class);
-            navigateDelayed(intent);
+            intent = new Intent(this, LoginActivity.class);
         }
+        navigateDelayed(intent);
     }
 
     private void navigateDelayed(final Intent intent) {

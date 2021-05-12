@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
@@ -135,6 +136,7 @@ public class PainDataEntryFragment extends Fragment {
                 String username = mAuth.getCurrentUser().getEmail();
 
                 String recordDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
                 Integer painLevel = Integer.parseInt(String.valueOf(level).substring(0,1));
                 Integer moodLevel = Integer.parseInt(String.valueOf(mood).substring(0,1));
                 if(StringUtils.isBlank(etEnterSteps.getText())) {
@@ -171,7 +173,19 @@ public class PainDataEntryFragment extends Fragment {
                 etEnterGoal.setEnabled(false);
                 bSave.setEnabled(false);
 
-//                model.insert(painRecord);
+//                Random r = new Random();
+//                PainRecord pr = new PainRecord();
+//                pr.setPainLocation(location);
+//                pr.setUsername(username);
+//                pr.setTemperature(5 + r.nextInt(1700)/100);
+//                pr.setPressure(900 + r.nextInt(2000)/100);
+//                pr.setHumidity(r.nextInt(10000)/100);
+//                pr.setPainLevel(r.nextInt(10));
+//                pr.setMoodLevel(r.nextInt(4));
+//                pr.setStepTaken(r.nextInt(8000));
+//                pr.setDate( "10-05-2021");
+//                model.insert(pr);
+
                 try {
                     PainRecord painRecord_old = model.findByDate(recordDate).get();
                     if (painRecord_old == null) {

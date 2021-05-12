@@ -1,66 +1,103 @@
 package com.example.ass3.fragment;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ass3.R;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MapsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.io.IOException;
+import java.util.List;
+
 public class MapsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private MapView mapView;
+    private EditText etAddress;
+    private Geocoder geocoder;
+    private LatLng latLng;
+    private Button bSearch;
 
     public MapsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MapsFragment newInstance(String param1, String param2) {
-        MapsFragment fragment = new MapsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        String token = getString(R.string.mapbox_access_token);
+        Mapbox.getInstance(getContext(), token);
+        View view = inflater.inflate(R.layout.fragment_maps, container, false);
+        geocoder = new Geocoder(getContext());
+        etAddress = view.findViewById(R.id.et_address);
+
+        bSearch = view.findViewById(R.id.btn_search_address);
+        bSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String homeAddress = etAddress.getText().toString().trim();
+                if (homeAddress == null) {
+                    Toast.makeText(getContext(), "Please enter correct address" , Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocationName(homeAddress, 5);
+                    if (addresses.size() == 0) {
+                        Toast.makeText(getContext(), "Please enter correct address" , Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Address address = addresses.get(0);
+                    latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mapView = view.findViewById(R.id.mapView);
+                mapView.onCreate(savedInstanceState);
+                mapView.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                            @Override
+                            public void onStyleLoaded(@NonNull Style style) {
+                                CameraPosition position = new CameraPosition.Builder()
+                                        .target(latLng)
+                                        .zoom(13)
+                                        .build();
+                                mapboxMap.setCameraPosition(position);
+                                mapboxMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title("Home"));
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        return view;
     }
 }

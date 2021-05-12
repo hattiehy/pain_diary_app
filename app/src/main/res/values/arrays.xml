@@ -35,4 +35,10 @@
         <item>good</item>
         <item>very good</item>
     </string-array>
+
+    <string-array name="weatherArray">
+        <item>temperature</item>
+        <item>humidity</item>
+        <item>pressure</item>
+    </string-array>
 </resources>

@@ -41,7 +41,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ((ViewHolder) holder).textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "uid: " + allRecords.get(position).uid + "painLevel: " + allRecords.get(position).painLevel + "temp: " + allRecords.get(position).temperature + "location: "+ allRecords.get(position).painLocation + "step: " + allRecords.get(position).stepTaken, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "uid: " + allRecords.get(position).uid + "painLevel: " +allRecords.get(position).painLevel + "temp: " + allRecords.get(position).temperature + "location: "+ allRecords.get(position).painLocation + "step: " + allRecords.get(position).stepTaken, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_nav_report_fragment_to_stepTakenFragment"
             app:destination="@id/stepTakenFragment" />
+        <action
+            android:id="@+id/action_nav_report_fragment_to_painWeatherFragment"
+            app:destination="@id/painWeatherFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_map_fragment"
@@ -42,4 +45,9 @@
         android:name="com.example.ass3.fragment.StepTakenFragment"
         android:label="fragment_step_taken"
         tools:layout="@layout/fragment_step_taken" />
+    <fragment
+        android:id="@+id/painWeatherFragment"
+        android:name="com.example.ass3.fragment.PainWeatherFragment"
+        android:label="fragment_pain_weather"
+        tools:layout="@layout/fragment_pain_weather" />
 </navigation>

@@ -50,7 +50,7 @@ public class StepTakenFragment extends Fragment {
     public StepTakenFragment() {
         // Required empty public constructor
     }
-    
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class StepTakenFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) { 
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_step_taken, container, false);
         pcStepTaken = view.findViewById(R.id.pc_step_taken);
 
@@ -85,17 +85,17 @@ public class StepTakenFragment extends Fragment {
         pcStepTaken.setDrawCenterText(true);
 
         pcStepTaken.setRotationAngle(0);
-    // enable rotation of the pcStepTaken by touch
+        // enable rotation of the pcStepTaken by touch
         pcStepTaken.setRotationEnabled(true);
         pcStepTaken.setHighlightPerTapEnabled(true);
 
-    // add a selection listener
+        // add a selection listener
 //        pcStepTaken.setOnpcStepTakenValueSelectedListener(this);
 
         pcStepTaken.animateY(1400, Easing.EaseInOutQuad);
-    // chart.spin(2000, 0, 360);
+        // chart.spin(2000, 0, 360);
 
-    Legend l = pcStepTaken.getLegend();
+        Legend l = pcStepTaken.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
@@ -104,31 +104,31 @@ public class StepTakenFragment extends Fragment {
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
 
-    ArrayList<PieEntry> entries = new ArrayList<>();
-    SharedPreferences sharedPref= requireActivity(). getSharedPreferences("step_goal", Context.MODE_PRIVATE);
-    Integer currentGoal = sharedPref.getInt("step_goal",10000);
-    Integer currentStep = 0;
-    Integer stepRemaining = currentGoal;
-    String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-    PainRecordViewModel model = new ViewModelProvider(requireActivity()).get(PainRecordViewModel.class);
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("step_goal", Context.MODE_PRIVATE);
+        Integer currentGoal = sharedPref.getInt("step_goal", 10000);
+        Integer currentStep = 0;
+        Integer stepRemaining = currentGoal;
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        PainRecordViewModel model = new ViewModelProvider(requireActivity()).get(PainRecordViewModel.class);
         try {
-        PainRecord curPainRecord = model.findByDate(currentDate).get();
-        if (curPainRecord != null) {
-            currentStep = curPainRecord.stepTaken;
-            stepRemaining = currentGoal - currentStep;
+            PainRecord curPainRecord = model.findByDate(currentDate).get();
+            if (curPainRecord != null) {
+                currentStep = curPainRecord.stepTaken;
+                stepRemaining = currentGoal - currentStep;
+            }
+        } catch (
+                ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-    } catch (
-    ExecutionException e) {
-        e.printStackTrace();
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    }
 
-    entries.add(new PieEntry(currentStep,"Current Steps"));
-    entries.add(new PieEntry(stepRemaining,"Remaining Steps"));
+        entries.add(new PieEntry(currentStep, "Current Steps"));
+        entries.add(new PieEntry(stepRemaining, "Remaining Steps"));
 
 
-    PieDataSet dataSet = new PieDataSet(entries, "Current step taken");
+        PieDataSet dataSet = new PieDataSet(entries, "Current step taken");
 
         dataSet.setDrawIcons(false);
 
@@ -136,9 +136,9 @@ public class StepTakenFragment extends Fragment {
         dataSet.setIconsOffset(new MPPointF(0, 40));
         dataSet.setSelectionShift(5f);
 
-    // add a lot of colors
+        // add a lot of colors
 
-    ArrayList<Integer> colors = new ArrayList<>();
+        ArrayList<Integer> colors = new ArrayList<>();
 
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
@@ -158,9 +158,9 @@ public class StepTakenFragment extends Fragment {
         colors.add(ColorTemplate.getHoloBlue());
 
         dataSet.setColors(colors);
-    //dataSet.setSelectionShift(0f);
+        //dataSet.setSelectionShift(0f);
 
-    PieData data = new PieData(dataSet);
+        PieData data = new PieData(dataSet);
         data.setValueFormatter(new PercentFormatter());
         data.setValueTextSize(13f);
         data.setValueTextColor(Color.DKGRAY);
@@ -168,13 +168,13 @@ public class StepTakenFragment extends Fragment {
         pcStepTaken.setEntryLabelColor(Color.DKGRAY);
         pcStepTaken.setData(data);
 
-    // undo all highlights
+        // undo all highlights
         pcStepTaken.highlightValues(null);
 
         pcStepTaken.invalidate();
 
         return view;
-}
+    }
 
 
     private SpannableString generateCenterSpannableText() {
