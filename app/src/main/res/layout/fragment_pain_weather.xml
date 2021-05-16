@@ -85,14 +85,14 @@
         android:id="@+id/btn_analyse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="data analysis"/>
+        android:text="data analysis"
+        android:enabled="false"/>
 
     <TextView
         android:id="@+id/tv_analyse_result"
         android:layout_width="match_parent"
         android:textSize="15sp"
         android:textColor="@color/black"
-        android:layout_height="wrap_content"
-        android:enabled="false"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

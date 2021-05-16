@@ -50,4 +50,9 @@
         android:name="com.example.ass3.fragment.PainWeatherFragment"
         android:label="fragment_pain_weather"
         tools:layout="@layout/fragment_pain_weather" />
+    <fragment
+        android:id="@+id/recordDisplayFragment"
+        android:name="com.example.ass3.fragment.RecordDisplayFragment"
+        android:label="fragment_record_display"
+        tools:layout="@layout/fragment_record_display" />
 </navigation>

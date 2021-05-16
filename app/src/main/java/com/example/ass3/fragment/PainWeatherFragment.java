@@ -179,6 +179,10 @@ public class PainWeatherFragment extends Fragment {
         bAnalyse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (painNums.size() <= 2 || weathers.size() <= 2){
+                    Toast.makeText(getContext(), "Insufficient sample data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String testResult = testCorrelation(painNums, weathers);
                 tvResult.setText(testResult);
             }
@@ -197,11 +201,6 @@ public class PainWeatherFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setChart() {
         lcPainWeather.setDrawBorders(true);
-        //set title
-//        lcPainWeather.getDescription().setText("Pain and Weather Line chart");
-//        lcPainWeather.getDescription().setTextSize(16f);
-//        lcPainWeather.getDescription().setTextColor(getContext().getApplicationContext().getResources()
-//                .getColor(R.color.black));
 
         Legend legend = lcPainWeather.getLegend();
         legend.setForm(Legend.LegendForm.CIRCLE);

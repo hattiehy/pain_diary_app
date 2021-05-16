@@ -1,5 +1,6 @@
 package com.example.ass3.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,7 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ass3.R;
@@ -15,11 +20,19 @@ import com.example.ass3.databinding.HomeFragmentBinding;
 import com.example.ass3.entity.PainRecord;
 import com.example.ass3.viewmodel.PainRecordViewModel;
 import com.example.ass3.viewmodel.SharedViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kwabenaberko.openweathermaplib.constant.Languages;
 import com.kwabenaberko.openweathermaplib.constant.Units;
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
 import com.kwabenaberko.openweathermaplib.implementation.callback.CurrentWeatherCallback;
 import com.kwabenaberko.openweathermaplib.model.currentweather.CurrentWeather;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
     private TextView tCity;
@@ -32,6 +45,7 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,6 +95,7 @@ public class HomeFragment extends Fragment {
                 //
             }
         });
+
         return view;
     }
 
