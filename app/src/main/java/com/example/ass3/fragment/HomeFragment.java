@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
         //Instantiate Class With Your ApiKey As The Parameter
-        OpenWeatherMapHelper helper = new OpenWeatherMapHelper("9fdf5bb43454d997b3047a4fc699b7a3");
+        OpenWeatherMapHelper helper = new OpenWeatherMapHelper("APIKEY");
 
         //Set Units
         helper.setUnits(Units.METRIC);
